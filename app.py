@@ -114,7 +114,7 @@ class App(Coordinates):
 				if not self.check_dir("data/"+str(c)):
 					os.makedirs("data/"+str(c))
 				temp_long=temp_long+(self._log_diff*2)
-				dict[c]=Coordinates(temp_lat,temp_long)
+				dict[c]=Coordinates(str(temp_lat),str(temp_long))
 				print("creating object ",c)
 				Crawl(dict[c],c).run()
 
