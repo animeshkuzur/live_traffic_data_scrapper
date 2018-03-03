@@ -33,7 +33,7 @@ class Crawl(Coordinates):
 	def run(self):
 		browser = webdriver.Firefox()
 		browser.maximize_window()
-		browser.get(obj.get_url())
+		browser.get(self._point.get_url())
 		top=browser.find_element_by_id("tl").text
 		bottom=browser.find_element_by_id("bl").text
 		left=browser.find_element_by_id("ll").text
