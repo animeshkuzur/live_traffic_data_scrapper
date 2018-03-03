@@ -31,7 +31,13 @@ class Crawl(Coordinates):
 		return 0
 
 	def run(self):
-		
+		browser = webdriver.Firefox()
+		browser.maximize_window()
+		browser.get(obj.get_url())
+		top=browser.find_element_by_id("tl").text
+		bottom=browser.find_element_by_id("bl").text
+		left=browser.find_element_by_id("ll").text
+		right=browser.find_element_by_id("rl").text
 
 		return 0
 
@@ -51,13 +57,8 @@ class App(Coordinates):
 
 	def callibrate(self):
 		print("\nInitiating Callibration")
-
-		# if not os.path.exists("data"):
-		# 	os.makedirs("data")
-
 		if not self.check_dir("data"):
 			os.makedirs("data")
-
 		browser = webdriver.Firefox()
 		browser.maximize_window()
 		browser.get(tl.get_url())
@@ -74,7 +75,6 @@ class App(Coordinates):
 
 	def compute(self,top,bottom,left,right):
 		getcontext().prec = 6
-		#print(Decimal(top),Decimal(tl.get_lat()))
 		lat_diff1 = abs(Decimal(top)-Decimal(tl.get_lat()))
 		lat_diff2 = abs(Decimal(bottom)-Decimal(tl.get_lat()))
 		print(lat_diff1,lat_diff2)
@@ -104,7 +104,6 @@ class App(Coordinates):
 		dict={}
 		getcontext().prec = 6
 		temp_lat=Decimal(tl.get_lat())
-		# temp_long=Decimal(tl.get_log())
 		c=0
 		while(temp_lat>=Decimal(bl.get_lat())):
 			temp_long=Decimal(tl.get_log())
@@ -114,50 +113,30 @@ class App(Coordinates):
 				print("------------------------")
 				if not self.check_dir("data/"+str(c)):
 					os.makedirs("data/"+str(c))
-				# print(cc)
 				temp_long=temp_long+(self._log_diff*2)
-				# print("Creating Block%s window")
-
 				dict[c]=Coordinates(temp_lat,temp_long)
 				print("creating object ",c)
 				Crawl(dict[c],c).run()
 
 			temp_lat=temp_lat-(self._lat_diff*2)
-			# print("------------------")
 		return 0
 
 print("Co-ordinates")
 print("\n-----Top left-----")
-#temp_lat = input('lat: ')
-#temp_long = input('long: ')
-temp_lat = "28.785598"
-temp_long = "76.958770"
-print(temp_lat,temp_long)
-tl=Coordinates(temp_lat,temp_long)
+print(TOP_LAT,TOP_LOG)
+tl=Coordinates(TOP_LAT,TOP_LOG)
 
 print("\n-----Top right-----")
-#temp_lat = input('lat: ')
-#temp_long = input('long: ')
-temp_lat = "28.785598"
-temp_long = "77.461395"
-print(temp_lat,temp_long)
-tr=Coordinates(temp_lat,temp_long)
+print(TOP_LAT,BOTTOM_LOG)
+tr=Coordinates(TOP_LAT,BOTTOM_LOG)
 
 print("\n-----Bottom right-----")
-#temp_lat = input('lat: ')
-#temp_long = input('long: ')
-temp_lat = "28.329052"
-temp_long = "77.461395"
-print(temp_lat,temp_long)
-br=Coordinates(temp_lat,temp_long)
+print(BOTTOM_LAT,BOTTOM_LOG)
+br=Coordinates(BOTTOM_LAT,BOTTOM_LOG)
 
 print("\n-----Bottom left-----")
-#temp_lat = input('lat: ')
-#temp_long = input('long: ')
-temp_lat = "28.329052"
-temp_long = "76.958770"
-print(temp_lat,temp_long)
-bl=Coordinates(temp_lat,temp_long)
+print(BOTTOM_LAT,TOP_LOG)
+bl=Coordinates(BOTTOM_LAT,TOP_LOG)
 
 x=App(tl,tr,br,bl)
 x.start()
