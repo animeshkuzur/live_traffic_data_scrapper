@@ -41,9 +41,10 @@ class Crawl(Coordinates):
 
 	def scrapper(self):
 		while True:
-			time.sleep(30)
+			time.sleep(240)
 			print("refeshing browser:"+self._c)
 			self._browser.refresh()
+			time.sleep(60)
 			t = time.strftime("%H:%M:%S")
 			print("window "+self._c+" screenshot : "+t)
 			self._browser.save_screenshot("./data/"+self._c+"/"+t+".png")
@@ -134,7 +135,7 @@ class App(Coordinates):
 		getcontext().prec = 6
 		temp_lat=Decimal(tl.get_lat())
 		c=0
-		while(temp_lat>=Decimal(bl.get_lat())):
+		while(temp_lat>=Decimal(bl.get_lat())): #Decimal(bl.get_lat())
 			temp_long=Decimal(tl.get_log())
 			while(temp_long<=Decimal(tr.get_log())):
 				c+=1
@@ -146,8 +147,8 @@ class App(Coordinates):
 				dict[c]=Coordinates(str(temp_lat),str(temp_long))
 				print("creating object ",c)
 				Crawl(dict[c],c).run()
-
 			temp_lat=temp_lat-(self._lat_diff*2)
+			break #temp
 		return 0
 
 print("checking previous cache data")
