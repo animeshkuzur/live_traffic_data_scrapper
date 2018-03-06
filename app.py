@@ -1,9 +1,11 @@
 import sys
 import os
+import shutil
+import time
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from threading import Thread
-from time import sleep
+#from time import sleep
 from decimal import Decimal, getcontext
 
 from config import TOP_LAT, TOP_LOG, BOTTOM_LAT, BOTTOM_LOG
@@ -25,19 +27,46 @@ class Coordinates(object):
 class Crawl(Coordinates):
 	def __init__(self,obj,c):
 		self._point = obj
-		self._c = c
+		self._c = str(c)
+		self._dict={}
+
+		self._top=""
+		self._bottom=""
+		self._left=""
+		self._right=""
+
+		self._thread_dict={}
+		self._browser = webdriver.Firefox()
+
 
 	def scrapper(self):
-		return 0
+		while True:
+			time.sleep(30)
+			print("refeshing browser:"+self._c)
+			self._browser.refresh()
+			t = time.strftime("%H:%M:%S")
+			print("window "+self._c+" screenshot : "+t)
+			self._browser.save_screenshot("./data/"+self._c+"/"+t+".png")
 
 	def run(self):
-		browser = webdriver.Firefox()
-		browser.maximize_window()
-		browser.get(self._point.get_url())
-		top=browser.find_element_by_id("tl").text
-		bottom=browser.find_element_by_id("bl").text
-		left=browser.find_element_by_id("ll").text
-		right=browser.find_element_by_id("rl").text
+		# browser = webdriver.Firefox()
+		self._browser.maximize_window()
+		self._browser.get(self._point.get_url())
+		self._top=self._browser.find_element_by_id("tl").text
+		self._bottom=self._browser.find_element_by_id("bl").text
+		self._left=self._browser.find_element_by_id("ll").text
+		self._right=self._browser.find_element_by_id("rl").text
+		print("Creating description file...")
+		file = open("./data/"+self._c+"/DESC","w")
+		file.write(self._top+"\n")
+		file.write(self._bottom+"\n") 
+		file.write(self._left+"\n")
+		file.write(self._right+"\n")
+		file.close()
+
+		print("Creating a new Thread...")
+		self._thread_dict[self._c]=Thread(target=self.scrapper, args=())
+		self._thread_dict[self._c].start()
 
 		return 0
 
@@ -109,7 +138,7 @@ class App(Coordinates):
 			temp_long=Decimal(tl.get_log())
 			while(temp_long<=Decimal(tr.get_log())):
 				c+=1
-				print("Processing Block Number: ",c)
+				print("\nProcessing Block Number: ",c)
 				print("------------------------")
 				if not self.check_dir("data/"+str(c)):
 					os.makedirs("data/"+str(c))
@@ -120,6 +149,11 @@ class App(Coordinates):
 
 			temp_lat=temp_lat-(self._lat_diff*2)
 		return 0
+
+print("checking previous cache data")
+if os.path.exists("data"):
+	print("clearing cache data\n")
+	shutil.rmtree("data", ignore_errors=True)
 
 print("Co-ordinates")
 print("\n-----Top left-----")
