@@ -5,7 +5,6 @@ import time
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from threading import Thread
-#from time import sleep
 from decimal import Decimal, getcontext
 
 from config import TOP_LAT, TOP_LOG, BOTTOM_LAT, BOTTOM_LOG
@@ -50,7 +49,6 @@ class Crawl(Coordinates):
 			self._browser.save_screenshot("./data/"+self._c+"/"+t+".png")
 
 	def run(self):
-		# browser = webdriver.Firefox()
 		self._browser.maximize_window()
 		self._browser.get(self._point.get_url())
 		self._top=self._browser.find_element_by_id("tl").text
@@ -100,7 +98,14 @@ class App(Coordinates):
 		print(top,bottom,left,right)
 		map_parts = self.compute(top,bottom,left,right)
 		print(str(map_parts)+" total windows")
-		
+
+		file = open("./data/DESC","w")
+		file.write(TOP_LAT+"\n")
+		file.write(TOP_LOG+"\n") 
+		file.write(BOTTOM_LAT+"\n")
+		file.write(BOTTOM_LOG+"\n")
+		file.close()
+
 		return 0
 
 	def compute(self,top,bottom,left,right):
@@ -128,6 +133,7 @@ class App(Coordinates):
 			b=b+Decimal(log_diff*2)
 			y=y+1
 		print(str(y)+" column windows")
+
 		return x*y
 
 	def start(self):
