@@ -135,7 +135,7 @@ class App(Coordinates):
 		log_diff = min(log_diff1,log_diff2)
 		b=Decimal(tl.get_log())
 		y=0
-		self._log_diff=log_diff;
+		self._log_diff=log_diff
 		while(b<Decimal(tr.get_log())):
 			b=b+Decimal(log_diff*2)
 			y=y+1
