@@ -28,7 +28,7 @@ class Coordinates(object):
 		return self._log
 
 	def get_url(self):
-		return "http://adzippy.dev/traffic/data?lat="+self._lat+"&long="+self._log
+		return "https://adzippy.com/traffic/data?lat="+self._lat+"&long="+self._log
 
 class Crawl(Coordinates):
 	def __init__(self,obj,c):
