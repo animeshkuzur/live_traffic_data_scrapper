@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from threading import Thread
 from decimal import Decimal, getcontext
+from selenium.webdriver.firefox.options import Options
 
 from config import TOP_LAT, TOP_LOG, BOTTOM_LAT, BOTTOM_LOG
 
@@ -27,7 +28,7 @@ class Coordinates(object):
 		return self._log
 
 	def get_url(self):
-		return "https://adzippy.com/traffic/data?lat="+self._lat+"&long="+self._log
+		return "http://adzippy.dev/traffic/data?lat="+self._lat+"&long="+self._log
 
 class Crawl(Coordinates):
 	def __init__(self,obj,c):
@@ -41,8 +42,7 @@ class Crawl(Coordinates):
 		self._right=""
 
 		self._thread_dict={}
-		self._browser = webdriver.Firefox()
-
+		self._browser = webdriver.Firefox(firefox_options=options)
 
 	def scrapper(self):
 		while True:
@@ -55,7 +55,7 @@ class Crawl(Coordinates):
 			self._browser.save_screenshot("./data/"+self._c+"/"+t+".png")
 
 	def run(self):
-		self._browser.maximize_window()
+		self._browser.set_window_size(5000, 5000)
 		self._browser.get(self._point.get_url())
 		self._top=self._browser.find_element_by_id("tl").text
 		self._bottom=self._browser.find_element_by_id("bl").text
@@ -94,8 +94,8 @@ class App(Coordinates):
 		if not self.check_dir("data"):
 			os.makedirs("data")
 
-		browser = webdriver.Firefox()
-		browser.maximize_window()
+		browser = webdriver.Firefox(firefox_options=options)
+		browser.set_window_size(5000, 5000)
 		browser.get(tl.get_url())
 		top=browser.find_element_by_id("tl").text
 		bottom=browser.find_element_by_id("bl").text
@@ -161,9 +161,12 @@ class App(Coordinates):
 				logger("creating object "+str(c))
 				Crawl(dict[c],c).run()
 			temp_lat=temp_lat-(self._lat_diff*2)
-			break #temp
+			#break #temp
 		return 0
 
+
+options = Options()
+options.set_headless(headless=True)
 
 logger("checking previous cache data")
 if os.path.exists("data"):

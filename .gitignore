@@ -2,3 +2,4 @@ geckodriver.log
 ./data/
 ./__pycache__/*
 log
+./data/1/DESC
